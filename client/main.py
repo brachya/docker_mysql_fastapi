@@ -26,8 +26,8 @@ class Server:
         async def root():
             return {"message": "HELLO", "connected to db": self.connected_to_db}
 
-        @self.app.get("/customers/{name}")
-        async def get_customer_by_name(name: str):
+        @self.app.get("/logs/{name}")
+        async def get_log_by_name(name: str):
             if not self.connected_to_db:
                 await self.connect_to_db()
             exist, data = self.db.query(name)
