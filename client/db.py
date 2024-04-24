@@ -49,23 +49,9 @@ class MyDb:
 
     def create_log(self, msg: Log) -> bool:
         try:
-            insert_statement = (
+            self.mycursor.execute(
                 f"INSERT INTO {self.table} (log_msg) VALUES('{msg.log_msg}');"
             )
-            print(insert_statement)
-            self.mycursor.execute(insert_statement)
-            return True
-        except:
-            return False
-
-    def create_logs(self, logs: list[Log]) -> bool:
-        try:
-            for one_log in logs:
-                insert_statement = (
-                    f"INSERT INTO {self.table} (log_msg) VALUES('{one_log.log_msg}');"
-                )
-                print(insert_statement)
-                self.mycursor.execute(insert_statement)
             return True
         except:
             return False

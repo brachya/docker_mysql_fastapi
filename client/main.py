@@ -10,7 +10,9 @@ class Server:
         self.app = FastAPI()
         self.app.swagger_ui_parameters
 
-    async def connect_to_db(self) -> None:
+    async def ensure_connection(self) -> None:
+        if self.connected_to_db:
+            return
         try:
             self.db = MyDb()
             self.connected_to_db = True
@@ -29,8 +31,7 @@ class Server:
 
         @self.app.get("/logs/{name}")
         async def get_log_by_name(name: str):
-            if not self.connected_to_db:
-                await self.connect_to_db()
+            await self.ensure_connection()
             exist, data = self.db.query(name)
             if exist:
                 return HTMLResponse(data, 200)
@@ -38,17 +39,8 @@ class Server:
 
         @self.app.post("/add_log/")
         async def add_log(msg: Log):
-            if not self.connected_to_db:
-                await self.connect_to_db()
+            await self.ensure_connection()
             if self.db.create_log(msg):
-                return HTMLResponse("INSERT SUCCEEDED", 200)
-            return HTMLResponse("FAILED TO INSERT", 400)
-
-        @self.app.post("/add_logs/")
-        async def add_logs(logs: list[Log]):
-            if not self.connected_to_db:
-                await self.connect_to_db()
-            if self.db.create_logs(logs):
                 return HTMLResponse("INSERT SUCCEEDED", 200)
             return HTMLResponse("FAILED TO INSERT", 400)
 
