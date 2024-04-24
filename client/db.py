@@ -5,7 +5,7 @@ from log_model import Log
 class MyDb:
     def __init__(
         self,
-        host: str = "10.5.0.4",
+        host: str = "database",
         port: int = 3306,
         user: str = "brachya",
         password: str = "1234",
@@ -54,6 +54,18 @@ class MyDb:
             )
             print(insert_statement)
             self.mycursor.execute(insert_statement)
+            return True
+        except:
+            return False
+
+    def create_logs(self, logs: list[Log]) -> bool:
+        try:
+            for one_log in logs:
+                insert_statement = (
+                    f"INSERT INTO {self.table} (log_msg) VALUES('{one_log.log_msg}');"
+                )
+                print(insert_statement)
+                self.mycursor.execute(insert_statement)
             return True
         except:
             return False

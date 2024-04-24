@@ -44,6 +44,14 @@ class Server:
                 return HTMLResponse("INSERT SUCCEEDED", 200)
             return HTMLResponse("FAILED TO INSERT", 400)
 
+        @self.app.post("/add_logs/")
+        async def add_logs(logs: list[Log]):
+            if not self.connected_to_db:
+                await self.connect_to_db()
+            if self.db.create_logs(logs):
+                return HTMLResponse("INSERT SUCCEEDED", 200)
+            return HTMLResponse("FAILED TO INSERT", 400)
+
         @app.on_event("startup")
         def startup():
             print("startup")
