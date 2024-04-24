@@ -1,0 +1,30 @@
+version: "3.3"
+services:
+  database:
+    container_name: my-sql
+    build: ./database/
+    environment:
+      MYSQL_ROOT_PASSWORD: '1234'
+    # expose:
+    #   - 127.0.0.1:3306
+    ports:
+      - 127.0.0.1:3310:3306
+    networks:
+      container_ip:
+        ipv4_address: 10.5.0.4
+  web-api:
+    container_name: api
+    build: ./client/
+    ports:
+      - '80:80'
+    networks:
+      container_ip:
+        ipv4_address: 10.5.0.3
+    depends_on:
+      - database
+networks:
+  container_ip:
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.5.0.0/24"
