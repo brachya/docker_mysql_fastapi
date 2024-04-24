@@ -1,4 +1,5 @@
 import mysql.connector
+from log_model import Log
 
 
 class MyDb:
@@ -38,13 +39,24 @@ class MyDb:
         for head in headers:
             html += f"<th>{head[0]}</th>\n"  # type:ignore
         html += "</tr>\n"
-        # for row in data:
-        #     html += "<tr>\n"
-        #     for val in row:
-        #         html += f"<td>{val}</td>\n"
-        #     html += "</tr>\n"
+        for row in data:
+            html += "<tr>\n"
+            for val in row:
+                html += f"<td>{val}</td>\n"
+            html += "</tr>\n"
         html += "</table>\n"
         return (True if data else False, html)
+
+    def create_log(self, msg: Log) -> bool:
+        try:
+            insert_statement = (
+                f"INSERT INTO {self.table} (log_msg) VALUES('{msg.log_msg}');"
+            )
+            print(insert_statement)
+            self.mycursor.execute(insert_statement)
+            return True
+        except:
+            return False
 
     def close(self) -> None:
         self.mycursor.close()

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from db import MyDb
+from log_model import Log
 
 
 class Server:
@@ -34,6 +35,14 @@ class Server:
             if exist:
                 return HTMLResponse(data, 200)
             return HTMLResponse("key doesn't match", 400)
+
+        @self.app.post("/add_log/")
+        async def add_log(msg: Log):
+            if not self.connected_to_db:
+                await self.connect_to_db()
+            if self.db.create_log(msg):
+                return HTMLResponse("INSERT SUCCEEDED", 200)
+            return HTMLResponse("FAILED TO INSERT", 400)
 
         @app.on_event("startup")
         def startup():
