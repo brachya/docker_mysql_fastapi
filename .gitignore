@@ -1,3 +1,2 @@
-venv/
-client/venv/
-client/__pycache__/
+server/venv/
+server/__pycache__/
